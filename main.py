@@ -1,3 +1,4 @@
+import sqlite3
 import csv
 import re
 import urllib.request
@@ -82,13 +83,27 @@ def parse(html, link):
     return teacherInfo
 
 
-def save(teachers, path):
-    with open(path, 'w', newline = '') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow(('ФИО', 'Подразделение', 'Должность' 'Аудитория', 'Телефон', 'E-mail', 'Ссылка', 'Ссылка на фото'))
+def save(teachers, db_file):
+    db = sqlite3.connect(db_file)
+    cursor = db.cursor()
 
-        for teacher in teachers:
-            writer.writerow((teacher['name'], teacher['department'], teacher['occupation'], teacher['hall'], teacher['phone'], teacher['mail'], teacher['link'], teacher['photo']))
+    # Создаём таблицу users, если она не существует
+    cursor.execute("""CREATE TABLE IF NOT EXISTS teachers
+                                  (
+                                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                                    name TEXT,
+                                    department TEXT,
+                                    occupation TEXT,
+                                    hall TEXT,
+                                    phone TEXT,
+                                    mail TEXT,
+                                    link TEXT,
+                                    photo TEXT
+                                  )""")
+
+
+    for teacher in teachers:
+        cursor.execute('INSERT INTO teachers (mail, link, occupation, department, photo, name, phone, hall) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', (teacher['mail'], teacher['link'], teacher['occupation'], teacher['department'], teacher['photo'],  teacher['name'], teacher['phone'], teacher['hall']))
 
 
 def main():
@@ -102,7 +117,10 @@ def main():
     for teacher in teacherLink:
         teacherInfo.extend(parse(get_html(teacher['link']), teacher['link']))
 
-    save(teacherInfo, "info.csv")
+
+
+
+    save(teacherInfo, "teachers.db")
 
 
 if __name__ == '__main__':
