@@ -63,20 +63,23 @@ def parse(html, link):
     except:
         occupation = 'не указана'
 
-    departmentPattern = r'([А-Яа-я]*\s*)*'
+    departmentPattern = r'([А-Яа-я]*\s*[-]?[«]?[»]?[(]?[)]?)*'
     phonePattern = r'\s*(\W\d{3}\W\s\d{3}-\d{2}-\d{2})\s*'
     mailPattern = r'\w+@\w+.\w{1,4}'
     hallPattern = r':\s*(\d{4}\w*)'
     mail = re.search(mailPattern, str(information))
     phone = re.search(phonePattern, str(information))
     hall = re.search(hallPattern, str(information))
-    department = re.search(departmentPattern, str(table.find('a').text))
+    try:
+        department = re.search(departmentPattern, str(table.find('a').text)).group(0)
+    except:
+        department = 'Не указано'
 
     teacherInfo = []
 
     teacherInfo.append({
         'name': information.h1.text,
-        'department': department.group(0) if department else 'не указано',
+        'department': department,
         'occupation': occupation,
         'hall': hall.group(0)[2:] if hall else 'не указана',
         'phone': phone.group(0) if phone else 'не указан',
@@ -115,7 +118,7 @@ def main():
     teacherLink = []
     teacherInfo = []
 
-    for link in letterLink:
+    for link in letterLink[:5]:
         teacherLink.extend(get_teacher_link((get_html(link['link']))))
 
     for teacher in teacherLink:
