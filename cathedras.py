@@ -67,12 +67,15 @@ def save(cathedras, db_file):
                                         link TEXT
                                       )""")
 
+    db.commit()
+
     for cathedra in cathedras:
         cursor.execute(
             'INSERT INTO cathedras (cathedra, head, phone, hall, mail, link) VALUES (?, ?, ?, ?, ?, ?)',
             (cathedra['cathedra'], cathedra['head'], cathedra['phone'], cathedra['hall'], cathedra['mail'],
              cathedra['link']))
 
+    db.commit()
 
 def main():
     links = get_links(get_html(LINK_URL))
