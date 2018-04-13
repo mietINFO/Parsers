@@ -48,7 +48,7 @@ def get_teacher_link(html):
     return teacherLink
 
 
-def parse(html):
+def parse(html, link):
     soup = BeautifulSoup(html, 'html.parser')
     information = soup.find('div', class_ = 'person')
     table = information.find('table')
@@ -81,7 +81,7 @@ def parse(html):
         'hall': hall.group(0)[2:] if hall else 'не указана',
         'phone': phone.group(0) if phone else 'не указан',
         'mail': mail.group(0) if mail else 'не указан',
-        # 'link': link,
+        'link': link,
         'photo': MIET_URL[:-1] + information.find('img').get('src')
       })
     return teacherInfo
