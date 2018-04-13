@@ -118,7 +118,7 @@ def main():
     teacherLink = []
     teacherInfo = []
 
-    for link in letterLink[:5]:
+    for link in letterLink:
         teacherLink.extend(get_teacher_link((get_html(link['link']))))
 
     for teacher in teacherLink:
