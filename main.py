@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 
 BASE_URL = 'http://miet.ru/people/'
 MIET_URL = 'http://miet.ru/'
+#aqwe
 
 def get_html(url):
     response = urllib.request.urlopen(url)
