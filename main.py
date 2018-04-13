@@ -48,37 +48,40 @@ def get_teacher_link(html):
     return teacherLink
 
 
-def parse(html, link):
+def parse(html):
     soup = BeautifulSoup(html, 'html.parser')
     information = soup.find('div', class_ = 'person')
+    table = information.find('table')
 
-    try:
-        department = information.find_all('a')[2].text
-    except:
-        department = 'не указано'
+    # try:
+    #     department = information.find_all('a')[1].text
+    # except:
+    #     department = 'не указано'
 
     try:
         occupation = information.find_all('td', class_='pos')[1].text
     except:
         occupation = 'не указана'
 
+    departmentPattern = r'([А-Яа-я]*\s*)*'
     phonePattern = r'\s*(\W\d{3}\W\s\d{3}-\d{2}-\d{2})\s*'
     mailPattern = r'\w+@\w+.\w{1,4}'
     hallPattern = r':\s*(\d{4}\w*)'
     mail = re.search(mailPattern, str(information))
     phone = re.search(phonePattern, str(information))
     hall = re.search(hallPattern, str(information))
+    department = re.search(departmentPattern, str(table.find('a').text))
 
     teacherInfo = []
 
     teacherInfo.append({
         'name': information.h1.text,
-        'department': department,
+        'department': department.group(0) if department else 'не указано',
         'occupation': occupation,
         'hall': hall.group(0)[2:] if hall else 'не указана',
         'phone': phone.group(0) if phone else 'не указан',
         'mail': mail.group(0) if mail else 'не указан',
-        'link': link,
+        # 'link': link,
         'photo': MIET_URL[:-1] + information.find('img').get('src')
       })
     return teacherInfo
@@ -117,9 +120,6 @@ def main():
 
     for teacher in teacherLink:
         teacherInfo.extend(parse(get_html(teacher['link']), teacher['link']))
-
-
-
 
     save(teacherInfo, "teachers.db")
 
