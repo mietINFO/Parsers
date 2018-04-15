@@ -44,7 +44,7 @@ def parse(html, cathedraName, link):
 
     cathedraInfo.append({
         'cathedra': cathedraName,
-        'cipher': cipher.group(0),
+        'cipher': cipher.group(0).upper(),
         'head': information.find('a').text,
         'phone': phone.group(0) if phone else 'не указан',
         'mail': mail.group(0) if mail else 'не указан',
