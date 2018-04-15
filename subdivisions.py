@@ -64,6 +64,7 @@ def save(subdivisions, db_file):
                                       (
                                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                                         subdivision TEXT,
+                                        cipher, TEXT,
                                         head TEXT,
                                         phone TEXT,
                                         hall TEXT,
@@ -74,8 +75,8 @@ def save(subdivisions, db_file):
 
     for subdivision in subdivisions:
         cursor.execute(
-            'INSERT INTO subdivisions (subdivision, head, phone, hall, mail, link) VALUES (?, ?, ?, ?, ?, ?)',
-            (subdivision['subdivision'], subdivision['head'], subdivision['phone'], subdivision['hall'], subdivision['mail'],
+            'INSERT INTO subdivisions (subdivision, cipher, head, phone, hall, mail, link) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            (subdivision['subdivision'], subdivision['head'], subdivision['cipher'], subdivision['phone'], subdivision['hall'], subdivision['mail'],
              subdivision['link']))
     db.commit()
 
