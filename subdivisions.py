@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 
 SUBDIVISIONS_LINK = 'https://miet.ru/structure/s/1619'
 MIET_LINK = 'https://miet.ru'
+# 
 
 def get_html(url):
     responce = urllib.request.urlopen(url)
