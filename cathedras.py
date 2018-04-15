@@ -42,7 +42,7 @@ def parse(html, cathedraName, link):
 
     cathedraInfo.append({
         'cathedra': cathedraName,
-        'head': information.find_all('b')[0].text + ': ' + information.find('a').text,
+        'head': information.find('a').text,
         'phone': phone.group(0) if phone else 'не указан',
         'mail': mail.group(0) if mail else 'не указан',
         'hall': hall.group(0)[2:] if hall else 'не указана',
