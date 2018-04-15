@@ -75,7 +75,7 @@ def save(cathedras, db_file):
 
     for cathedra in cathedras:
         cursor.execute(
-            'INSERT INTO cathedras (cathedra, head, phone, hall, mail, link) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO cathedras (cathedra, cipher, head, phone, hall, mail, link) VALUES (?, ?, ?, ?, ?, ?, ?)',
             (cathedra['cathedra'], cathedra['cipher'], cathedra['head'], cathedra['phone'], cathedra['hall'], cathedra['mail'],
              cathedra['link']))
 
