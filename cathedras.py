@@ -35,13 +35,16 @@ def parse(html, cathedraName, link):
     mailPattern = r'\w+@\w+.\w{1,4}'
     hallPattern = r':\s*(\d{4}\w*)'
     phonePattern = r'(\W\d{3}\W\s\d{3}-\d{2}-\d{2})\s*'
+    cipherPattern = r'([А-Яа-я]*[-]?[1-2]?)*'
 
     phone = re.search(phonePattern, str(information))
     mail = re.search(mailPattern, str(information))
     hall = re.search(hallPattern, str(information))
+    cipher = re.search(cipherPattern, cathedraName)
 
     cathedraInfo.append({
         'cathedra': cathedraName,
+        'cipher': cipher.group(0),
         'head': information.find('a').text,
         'phone': phone.group(0) if phone else 'не указан',
         'mail': mail.group(0) if mail else 'не указан',
@@ -60,6 +63,7 @@ def save(cathedras, db_file):
                                       (
                                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                                         cathedra TEXT,
+                                        cipher TEXT,
                                         head TEXT,
                                         phone TEXT,
                                         hall TEXT,
@@ -71,8 +75,8 @@ def save(cathedras, db_file):
 
     for cathedra in cathedras:
         cursor.execute(
-            'INSERT INTO cathedras (cathedra, head, phone, hall, mail, link) VALUES (?, ?, ?, ?, ?, ?)',
-            (cathedra['cathedra'], cathedra['head'], cathedra['phone'], cathedra['hall'], cathedra['mail'],
+            'INSERT INTO cathedras (cathedra, head, phone, hall, mail, link) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            (cathedra['cathedra'], cathedra['cipher'], cathedra['head'], cathedra['phone'], cathedra['hall'], cathedra['mail'],
              cathedra['link']))
 
     db.commit()
