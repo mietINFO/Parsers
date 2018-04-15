@@ -35,14 +35,17 @@ def parse(html, subdivisionName, link):
     mailPattern = r'\w+@\w+.\w{1,4}'
     hallPattern = r':\s*(\d{4}\w*)'
     phonePattern = r'(\W\d{3}\W\s\d{3}-\d{2}-\d{2})\s*'
+    cipherPattern = r'\((.*?)\)'
 
     phone = re.search(phonePattern, str(information))
     mail = re.search(mailPattern, str(information))
     hall = re.search(hallPattern, str(information))
+    cipher = re.search(cipherPattern, subdivisionName)
     head = information.find('a').text
 
     subdivisionInfo.append({
         'subdivision': subdivisionName,
+        'cipher': cipher.group(1).upper(),
         'head': information.find('a').text if head else 'не указан',
         'phone': phone.group(0) if phone else 'не указан',
         'mail': mail.group(0) if mail else 'не указан',
@@ -85,7 +88,7 @@ def main():
         parser.extend(parse(get_html(link['link']), link['name'], link['link']))
     parser[-1]['head'] = 'Кузнецов Григорий Александрович'
     parser[-3]['head'] = 'не указан'
-    
+
     save(parser, 'subdivisions.db')
 
 
