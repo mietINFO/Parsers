@@ -13,24 +13,24 @@ def get_html(url):
 
 def get_links(html):
     soup = BeautifulSoup(html, 'html.parser')
-    cathedras = soup.find('div', class_ = 'news-detail')
-    links = cathedras.find('ul')
+    departments = soup.find('div', class_ = 'news-detail')
+    links = departments.find('ul')
 
-    cathedraLinks = []
+    departmentLinks = []
 
     for link in links.find_all('li'):
-        cathedraLinks.append({
-            'cathedra': link.find('a').text,
+        departmentLinks.append({
+            'department': link.find('a').text,
             'link': MIET_LINK + link.find('a').get('href')
         })
-    return cathedraLinks
+    return departmentLinks
 
 
-def parse(html, cathedraName, link):
+def parse(html, departmentName, link):
     soup = BeautifulSoup(html, 'html.parser')
     information = soup.find('div', {'id': 'eli_detail'})
 
-    cathedraInfo = []
+    departmentInfo = []
 
     mailPattern = r'\w+@\w+.\w{1,4}'
     hallPattern = r':\s*(\d{4}\w*)'
@@ -40,10 +40,10 @@ def parse(html, cathedraName, link):
     phone = re.search(phonePattern, str(information))
     mail = re.search(mailPattern, str(information))
     hall = re.search(hallPattern, str(information))
-    cipher = re.search(cipherPattern, cathedraName)
+    cipher = re.search(cipherPattern, departmentName)
 
-    cathedraInfo.append({
-        'cathedra': cathedraName,
+    departmentInfo.append({
+        'department': departmentName,
         'cipher': cipher.group(0).upper(),
         'head': information.find('a').text,
         'phone': phone.group(0) if phone else 'не указан',
@@ -51,18 +51,18 @@ def parse(html, cathedraName, link):
         'hall': hall.group(0)[2:] if hall else 'не указана',
         'link': link
     })
-    return cathedraInfo
+    return departmentInfo
 
 
-def save(cathedras, db_file):
+def save(departments, db_file):
     db = sqlite3.connect(db_file)
     cursor = db.cursor()
 
     # Создаём таблицу users, если она не существует
-    cursor.execute("""CREATE TABLE IF NOT EXISTS cathedras
+    cursor.execute("""CREATE TABLE IF NOT EXISTS departments
                                       (
                                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                                        cathedra TEXT,
+                                        department TEXT,
                                         cipher TEXT,
                                         head TEXT,
                                         phone TEXT,
@@ -73,11 +73,11 @@ def save(cathedras, db_file):
 
     db.commit()
 
-    for cathedra in cathedras:
+    for department in departments:
         cursor.execute(
-            'INSERT INTO cathedras (cathedra, cipher, head, phone, hall, mail, link) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            (cathedra['cathedra'], cathedra['cipher'], cathedra['head'], cathedra['phone'], cathedra['hall'], cathedra['mail'],
-             cathedra['link']))
+            'INSERT INTO departments (department, cipher, head, phone, hall, mail, link) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            (department['department'], department['cipher'], department['head'], department['phone'], department['hall'], department['mail'],
+             department['link']))
 
     db.commit()
 
@@ -86,9 +86,9 @@ def main():
     parser = []
 
     for link in links:
-        parser.extend(parse(get_html(link['link']), link['cathedra'], link['link']))
+        parser.extend(parse(get_html(link['link']), link['department'], link['link']))
 
-    save(parser, 'cathedras.db')
+    save(parser, 'departments.db')
 
 
 if __name__ == '__main__':

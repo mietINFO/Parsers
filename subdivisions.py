@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 
 SUBDIVISIONS_LINK = 'https://miet.ru/structure/s/1619'
 MIET_LINK = 'https://miet.ru'
-# 
 
 def get_html(url):
     responce = urllib.request.urlopen(url)
@@ -65,7 +64,7 @@ def save(subdivisions, db_file):
                                       (
                                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                                         subdivision TEXT,
-                                        cipher, TEXT,
+                                        cipher TEXT,
                                         head TEXT,
                                         phone TEXT,
                                         hall TEXT,
@@ -77,7 +76,7 @@ def save(subdivisions, db_file):
     for subdivision in subdivisions:
         cursor.execute(
             'INSERT INTO subdivisions (subdivision, cipher, head, phone, hall, mail, link) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            (subdivision['subdivision'], subdivision['head'], subdivision['cipher'], subdivision['phone'], subdivision['hall'], subdivision['mail'],
+            (subdivision['subdivision'], subdivision['cipher'], subdivision['head'], subdivision['phone'], subdivision['hall'], subdivision['mail'],
              subdivision['link']))
     db.commit()
 

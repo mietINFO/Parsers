@@ -107,11 +107,12 @@ def save(teachers, db_file):
                                     link TEXT,
                                     photo TEXT
                                   )""")
-
+    db.commit()
 
     for teacher in teachers:
         cursor.execute('INSERT INTO teachers (mail, link, occupation, department, photo, name, phone, hall) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', (teacher['mail'], teacher['link'], teacher['occupation'], teacher['department'], teacher['photo'],  teacher['name'], teacher['phone'], teacher['hall']))
 
+    db.commit()
 
 def main():
     letterLink = get_letter_link(get_html(BASE_URL))
